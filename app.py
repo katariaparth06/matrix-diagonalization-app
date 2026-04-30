@@ -136,4 +136,4 @@ if clicked:
 
 # Footer
 st.markdown("---")
-st.caption("🚀 Developed by Parth | Matrix Diagonalizer")
+st.caption("🚀 Developed by IT M 25-26 | Matrix Diagonalizer")
