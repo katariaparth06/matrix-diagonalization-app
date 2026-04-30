@@ -2,60 +2,87 @@ import streamlit as st
 import sympy as sp
 
 # Page config
-st.set_page_config(page_title="Matrix Diagonalization Tool", layout="centered")
+st.set_page_config(page_title="Matrix Diagonalizer", layout="centered")
 
-# Custom styling
+# 🔥 FUTURISTIC CSS
 st.markdown("""
 <style>
 body {
-    background-color: #0e1117;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: white;
 }
+
 .title {
-    font-size: 42px;
-    font-weight: bold;
+    font-size: 48px;
+    font-weight: 800;
     text-align: center;
-    color: #4CAF50;
+    background: -webkit-linear-gradient(#00f5ff, #00ff87);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
+
 .subtitle {
     text-align: center;
-    font-size: 18px;
-    color: gray;
-    margin-bottom: 20px;
+    color: #aaa;
+    margin-bottom: 30px;
 }
-.matrix-input input {
+
+div[data-baseweb="input"] input {
     text-align: center;
-    font-size: 16px;
-}
-.result-box {
-    background-color: #111;
-    padding: 15px;
+    font-size: 18px;
     border-radius: 10px;
+    border: 1px solid #00f5ff;
+    background-color: #111;
+    color: #00ffcc;
+}
+
+/* 🔥 CENTERED BIG BUTTON */
+.center-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.stButton>button {
+    border-radius: 15px;
+    height: 60px;
+    width: 300px;
+    background: linear-gradient(90deg, #00f5ff, #00ff87);
+    color: black;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.result-box {
+    background: #111;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(0,255,255,0.3);
 }
 </style>
 """, unsafe_allow_html=True)
 
-# Title
-st.markdown('<div class="title">Matrix Diagonalization Tool</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Find Eigenvalues and Diagonalize Matrices Easily</div>', unsafe_allow_html=True)
+# 🔥 Title
+st.markdown('<div class="title">Matrix Diagonalizer</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Exact Eigenvalues & Diagonalization Tool</div>', unsafe_allow_html=True)
 
-# Info section
+# Info
 with st.expander("ℹ️ What is Diagonalization?"):
     st.write("""
-Diagonalization is the process of converting a matrix into a diagonal matrix.
-It simplifies complex matrix operations and is widely used in engineering, physics, and data science.
+Diagonalization converts a matrix into:
 
-A matrix A is diagonalizable if:
 A = P D P⁻¹
 
-Where:
-- D is a diagonal matrix (contains eigenvalues)
-- P contains eigenvectors
+• D → Eigenvalues  
+• P → Eigenvectors  
+
+Used in engineering, physics, and advanced mathematics.
 """)
 
-# Select size
-size = st.selectbox("📏 Select Matrix Size", [2, 3, 4])
+# Size selection
+size = st.selectbox("📐 Matrix Size", [2, 3, 4])
 
-st.markdown("### ✏️ Enter Matrix Values")
+st.markdown("### 🔢 Input Matrix")
 
 # Matrix input
 matrix = []
@@ -63,7 +90,7 @@ for i in range(size):
     cols = st.columns(size)
     row = []
     for j in range(size):
-        val = cols[j].text_input(f"a{i+1}{j+1}", "0", key=f"{i}{j}")
+        val = cols[j].text_input("", "0", key=f"{i}{j}")
         try:
             row.append(sp.sympify(val))
         except:
@@ -72,39 +99,41 @@ for i in range(size):
 
 st.markdown("---")
 
-# Compute button
-if st.button("🚀 Compute Diagonalization"):
+# 🔥 CENTERED BUTTON
+st.markdown('<div class="center-button">', unsafe_allow_html=True)
+clicked = st.button("⚡ Diagonalize")
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Compute
+if clicked:
     try:
         A = sp.Matrix(matrix)
 
-        st.markdown("## 📊 Results")
+        st.markdown('<div class="result-box">', unsafe_allow_html=True)
 
-        # Eigenvalues
+        st.subheader("🔷 Eigenvalues")
         eigenvals = A.eigenvals()
-        st.subheader("🔢 Eigenvalues")
         for val, mult in eigenvals.items():
-            st.latex(f"\\lambda = {sp.latex(val)} \\quad (multiplicity\\ {mult})")
+            st.latex(f"\\lambda = {sp.latex(val)} \\quad (x{mult})")
 
-        # Diagonalization
         P, D = A.diagonalize()
 
-        st.success("✅ Matrix is diagonalizable!")
+        st.success("✅ Matrix is diagonalizable")
 
-        # Matrix P
         st.subheader("📌 Matrix P")
         st.latex(sp.latex(P))
 
-        # Matrix D
         st.subheader("📌 Matrix D")
         st.latex(sp.latex(D))
 
-        # Verification
-        st.subheader("✔️ Verification (A = P D P⁻¹)")
+        st.subheader("✔️ Verification")
         st.latex(sp.latex(P * D * P.inv()))
+
+        st.markdown('</div>', unsafe_allow_html=True)
 
     except Exception:
         st.error("❌ Matrix is not diagonalizable or input is invalid.")
 
 # Footer
 st.markdown("---")
-st.caption("Developed by Parth | Matrix Diagonalization Project 🚀")
+st.caption("🚀 Developed by Parth | Matrix Diagonalizer")
