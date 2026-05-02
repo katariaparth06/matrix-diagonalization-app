@@ -30,7 +30,6 @@ div[data-baseweb="input"] input {
     color: #00ffcc;
 }
 
-/* disable autofill */
 input { autocomplete: off !important; }
 
 .stButton>button {
@@ -85,7 +84,7 @@ with st.expander("ℹ️ Input Instructions"):
 """)
 
 # ---------- MATRIX ----------
-size = st.selectbox("📐 Matrix Size", [2,3,4])  # ✅ restored 4x4
+size = st.selectbox("📐 Matrix Size", [2,3,4])
 st.markdown("### 🔢 Enter Matrix")
 
 def lb(i,n): return "⎡" if i==0 else "⎣" if i==n-1 else "⎢"
@@ -233,13 +232,30 @@ if st.session_state.computed:
             x = sp.symbols(f'x1:{A.shape[0]+1}')
             eqs = M*sp.Matrix(x)
 
+            st.markdown("Equations:")
             for eq in eqs:
                 if eq != 0:
                     st.latex(sp.latex(eq)+"=0")
 
-            st.markdown("Row Reduction:")
-            rref,_ = M.rref()
-            st.latex(sp.latex(rref))
+            # ✅ ONLY CHANGE: dynamic solving
+            st.markdown("Solving:")
+            relation_found = False
+            for eq in eqs:
+                if eq != 0 and len(x) >= 2:
+                    try:
+                        sol = sp.solve(eq, x[0])
+                        if sol:
+                            st.latex(
+                                sp.latex(eq) + " \\Rightarrow " +
+                                sp.latex(x[0]) + " = " + sp.latex(sol[0])
+                            )
+                            relation_found = True
+                            break
+                    except:
+                        pass
+
+            if not relation_found and len(x) >= 2:
+                st.latex(f"{x[0]} = t")
 
             st.markdown("Eigenvector:")
             for v in basis:
@@ -264,4 +280,4 @@ if st.session_state.computed:
         st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("---")
-st.caption("🚀 Developed by IT-M FYBTech | Matrix Diagonalizer")
+st.caption("🚀 Developed by Parth | Matrix Diagonalizer")
