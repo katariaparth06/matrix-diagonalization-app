@@ -1,7 +1,8 @@
 import streamlit as st
 import sympy as sp
 
-st.set_page_config(page_title="Matrix Diagonalizer", layout="centered")
+# ✅ ONLY CHANGE HERE
+st.set_page_config(page_title="Matrix Diagonalizer", layout="wide")
 
 if "computed" not in st.session_state:
     st.session_state.computed = False
@@ -67,6 +68,42 @@ input { autocomplete: off !important; }
     font-size:26px;
     text-shadow: 0 0 8px #00f5ff;
 }
+
+/* ✅ MOBILE FIX ADDED ONLY */
+@media (max-width: 768px) {
+
+    div[data-testid="column"] {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+    }
+
+    div[data-baseweb="input"] input {
+        font-size: 14px !important;
+        padding: 8px !important;
+    }
+
+    .matrix-bracket {
+        font-size: 20px !important;
+    }
+
+    .matrix-label {
+        font-size: 10px !important;
+    }
+
+    .stButton>button {
+        height: 60px !important;
+        font-size: 16px !important;
+    }
+
+    .title {
+        font-size: 28px !important;
+    }
+
+    .subtitle {
+        font-size: 14px !important;
+    }
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -237,7 +274,6 @@ if st.session_state.computed:
                 if eq != 0:
                     st.latex(sp.latex(eq)+"=0")
 
-            # ✅ ONLY CHANGE: dynamic solving
             st.markdown("Solving:")
             relation_found = False
             for eq in eqs:
@@ -280,4 +316,4 @@ if st.session_state.computed:
         st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("---")
-st.caption("🚀 Developed by Parth | Matrix Diagonalizer")
+st.caption("🚀 Developed by IT-M FYBTech | Matrix Diagonalizer")
