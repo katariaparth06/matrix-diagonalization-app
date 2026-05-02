@@ -6,7 +6,7 @@ st.set_page_config(page_title="Matrix Diagonalizer", layout="centered")
 if "computed" not in st.session_state:
     st.session_state.computed = False
 
-# ---------- STYLE (UNCHANGED + FIX ADDED) ----------
+# ---------- STYLE ----------
 st.markdown("""
 <style>
 .stApp { background-color: #0f172a; color: white; }
@@ -30,9 +30,8 @@ div[data-baseweb="input"] input {
     color: #00ffcc;
 }
 
-input {
-    autocomplete: off !important;
-}
+/* disable autofill */
+input { autocomplete: off !important; }
 
 .stButton>button {
     width: 100%;
@@ -66,6 +65,8 @@ input {
 .matrix-bracket {
     color:#00f5ff;
     text-align:center;
+    font-size:26px;
+    text-shadow: 0 0 8px #00f5ff;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -76,15 +77,15 @@ st.markdown('<div class="subtitle">Exact Eigenvalues • Fractions • Roots Sup
 
 # ---------- INSTRUCTIONS ----------
 with st.expander("ℹ️ Input Instructions"):
-    st.write("""
-• Fractions → 1/2  
-• Square roots → sqrt(2)  
-• Mixed → 1/2 + sqrt(3)  
-• Decimals → 0.5  
+    st.markdown("""
+✨ **Fractions** → `1/2`  
+✨ **Square roots** → `sqrt(2)`  
+✨ **Mixed** → `1/2 + sqrt(3)`  
+✨ **Decimals** → `0.5`  
 """)
 
 # ---------- MATRIX ----------
-size = st.selectbox("📐 Matrix Size", [2,3])
+size = st.selectbox("📐 Matrix Size", [2,3,4])  # ✅ restored 4x4
 st.markdown("### 🔢 Enter Matrix")
 
 def lb(i,n): return "⎡" if i==0 else "⎣" if i==n-1 else "⎢"
@@ -107,12 +108,7 @@ for i in range(size):
         for j in range(size):
             cols[j].markdown(f"<div class='matrix-label'>a{i+1}{j+1}</div>", unsafe_allow_html=True)
 
-            val = cols[j].text_input(
-                "",
-                key=f"{i}{j}",
-                label_visibility="collapsed",
-                placeholder=""
-            )
+            val = cols[j].text_input("", key=f"{i}{j}", label_visibility="collapsed", placeholder="")
 
             try:
                 row.append(sp.sympify(clean(val)))
@@ -228,7 +224,6 @@ if st.session_state.computed:
         for idx,(val,basis) in enumerate(eigen_data,1):
             st.markdown(f"**Eigenvalue λ{idx} = {sp.latex(val)}**")
 
-            # ✅ ADDED HERE ONLY
             st.markdown("Step: Construct (A - λI)")
             I = sp.eye(A.shape[0])
             M = A - val*I
